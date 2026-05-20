@@ -57,10 +57,20 @@ a {
   justify-content: center;
   gap: 8px;
   min-height: 40px;
-  padding: 8px 16px;
+  padding: 10px 16px;
   background: var(--green-900);
   color: var(--white);
   text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+#countdown-timer {
+  color: var(--yellow-400);
+  font-variant-numeric: tabular-nums;
 }
 
 .top-strip span {
@@ -149,9 +159,15 @@ a {
 .primary-cta {
   width: 100%;
   padding: 14px 18px;
-  background: var(--green-600);
+  background: #00c853;
   color: var(--white);
-  box-shadow: 0 12px 22px rgba(23, 122, 80, 0.24);
+  box-shadow: 0 12px 22px rgba(0, 200, 83, 0.3);
+  font-size: 1.1rem;
+}
+.primary-cta:hover {
+  background: #00e676;
+  box-shadow: 0 14px 28px rgba(0, 230, 118, 0.4);
+  transform: translateY(-2px);
 }
 
 .secondary-cta {
