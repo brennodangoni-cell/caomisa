@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 54">
-  <rect width="96" height="54" rx="8" fill="#ffffff"/>
-  <path d="M26 16l11-11a5 5 0 017 0l11 11-8 8-7-7a3 3 0 00-4 0l-7 7-3-3a4 4 0 010-5z" fill="#20bcae"/>
-  <path d="M26 38l11 11a5 5 0 007 0l11-11-8-8-7 7a3 3 0 01-4 0l-7-7-3 3a4 4 0 000 5z" fill="#20bcae"/>
-  <text x="61" y="33" fill="#083c2b" font-family="Arial, sans-serif" font-size="14" font-weight="700">Pix</text>
-</svg>

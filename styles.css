@@ -1266,18 +1266,15 @@ details p {
 
 .site-footer .footer-brand {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 96px minmax(0, 1fr);
   gap: 14px;
   align-items: start;
 }
 
 .footer-logo {
-  width: 72px;
-  height: 72px;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
+  width: 96px;
+  height: auto;
+  object-fit: contain;
 }
 
 .footer-brand strong,
@@ -1347,20 +1344,14 @@ details p {
 }
 
 .payment-icons {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+  display: block;
+  max-width: 360px;
 }
 
-.pay-icon {
-  width: 70px;
-  height: 40px;
+.payment-methods {
+  width: 100%;
+  height: auto;
   object-fit: contain;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  padding: 5px;
 }
 
 .site-footer > div.footer-bottom {
@@ -1446,10 +1437,13 @@ details p {
   }
 
   .site-footer .footer-brand {
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: 82px minmax(0, 1fr);
   }
 
-  .footer-logo,
+  .footer-logo {
+    width: 82px;
+  }
+
   .footer-mini-gallery img {
     width: 64px;
     height: 64px;
