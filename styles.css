@@ -73,6 +73,24 @@ a {
   font-weight: 700;
 }
 
+.promo-flash {
+  color: var(--yellow-400);
+  animation: promo-flash 1.15s ease-out infinite;
+}
+
+@keyframes promo-flash {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.72;
+    transform: scale(0.985);
+  }
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -1122,6 +1140,12 @@ details p {
 .top-strip strong {
   display: block;
   text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-flash {
+    animation: none;
+  }
 }
 
 .reviews-section {
