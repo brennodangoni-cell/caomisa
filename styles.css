@@ -1262,15 +1262,6 @@ details p {
   flex: 0 0 auto;
 }
 
-.review-photo {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-}
-
 .site-footer {
   display: block;
   width: min(1180px, calc(100% - 32px));
@@ -1320,23 +1311,6 @@ details p {
   text-wrap: pretty;
 }
 
-.footer-mini-gallery {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, 72px);
-  gap: 8px;
-  margin-top: 2px;
-}
-
-.footer-mini-gallery img {
-  width: 72px;
-  height: 72px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  object-fit: cover;
-  background: var(--white);
-}
-
 .site-footer .footer-security,
 .site-footer .footer-payments {
   display: grid;
@@ -1369,7 +1343,7 @@ details p {
 
 .payment-icons {
   display: block;
-  max-width: 360px;
+  max-width: 420px;
 }
 
 .payment-methods {
@@ -1389,11 +1363,6 @@ details p {
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: 0.9rem;
-}
-
-.site-footer > div.footer-bottom a {
-  color: var(--green-900);
-  font-weight: 800;
 }
 
 .whatsapp-button {
@@ -1466,15 +1435,6 @@ details p {
 
   .footer-logo {
     width: 82px;
-  }
-
-  .footer-mini-gallery img {
-    width: 64px;
-    height: 64px;
-  }
-
-  .footer-mini-gallery {
-    grid-template-columns: repeat(3, 64px);
   }
 
   .site-footer .footer-bottom {
