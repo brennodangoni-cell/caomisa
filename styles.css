@@ -1167,7 +1167,6 @@ details p {
 .review-card {
   display: flex;
   min-width: 0;
-  min-height: 100%;
   flex-direction: column;
   gap: 16px;
   width: 100%;
