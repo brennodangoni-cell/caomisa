@@ -330,14 +330,23 @@ h1 {
   color: var(--muted);
 }
 
-.pix-badge {
+.secure-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border-radius: 8px;
-  padding: 8px 10px;
-  background: var(--yellow-400);
+  padding: 8px 12px;
+  background: #e8f5df;
   color: var(--green-900);
-  font-size: 0.82rem;
-  font-weight: 900;
+  font-size: 0.85rem;
+  font-weight: 800;
   white-space: nowrap;
+}
+
+.secure-badge svg {
+  width: 16px;
+  height: 16px;
+  color: var(--green-700);
 }
 
 .buy-box {
