@@ -39,8 +39,14 @@ function updateIcons() {
 
 function updatePrice() {
   const currentPrice = document.querySelector("#currentPrice");
+  const installmentPrice = document.querySelector("#installmentPrice");
   const total = packages[selectedPackage].price * quantity;
+  const instValue = 6.64 * quantity;
+  
   currentPrice.textContent = formatBRL(total);
+  if(installmentPrice) {
+    installmentPrice.textContent = instValue.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
 }
 
 function updateSizeNote() {
@@ -67,7 +73,7 @@ function buildCheckoutUrl(order) {
 
   if (baseUrl) {
     const params = new URLSearchParams({
-      quantidade: String(order.quantity)
+      quantity: String(order.quantity)
     });
     return `${baseUrl}?${params.toString()}`;
   }
