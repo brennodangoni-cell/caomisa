@@ -887,7 +887,7 @@ details p {
 
 @media (max-width: 720px) {
   body {
-    padding-bottom: 72px;
+    padding-bottom: 0;
     font-size: 15px;
     line-height: 1.42;
   }
@@ -1342,14 +1342,18 @@ details p {
 }
 
 .payment-icons {
-  display: block;
+  display: flex;
+  height: 84px;
+  align-items: center;
+  overflow: hidden;
   max-width: 420px;
 }
 
 .payment-methods {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 84px;
+  object-fit: cover;
+  object-position: center;
 }
 
 .site-footer > div.footer-bottom {
@@ -1426,7 +1430,7 @@ details p {
   .site-footer {
     width: min(100% - 24px, 520px);
     margin-top: 52px;
-    padding-bottom: 92px;
+    padding-bottom: 34px;
   }
 
   .site-footer .footer-brand {
@@ -1440,6 +1444,11 @@ details p {
   .site-footer .footer-bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .payment-icons,
+  .payment-methods {
+    height: 64px;
   }
 
   .whatsapp-button {
