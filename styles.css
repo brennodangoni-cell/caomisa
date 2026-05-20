@@ -215,21 +215,25 @@ a {
 
 .thumb {
   overflow: hidden;
-  min-height: 86px;
-  border: 2px solid transparent;
+  min-height: auto;
+  border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--white);
   cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s ease;
 }
 
 .thumb.is-active {
-  border-color: var(--green-700);
+  border: 2px solid var(--green-700);
+  padding: 7px;
 }
 
 .thumb img {
   width: 100%;
-  height: 86px;
-  object-fit: cover;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 4px;
 }
 
 .purchase-panel {
@@ -466,8 +470,7 @@ legend {
   margin-bottom: 24px;
 }
 
-.section-heading h2,
-.final-cta h2 {
+.section-heading h2 {
   margin-bottom: 0;
   color: var(--green-900);
   font-size: 2.1rem;
@@ -675,16 +678,68 @@ details p {
 .final-cta {
   display: grid;
   justify-items: center;
-  gap: 16px;
-  border-radius: 8px;
-  padding: clamp(28px, 5vw, 56px);
-  background: #f7edbf;
+  gap: 24px;
+  border-radius: 16px;
+  padding: clamp(40px, 6vw, 64px) 24px;
+  background: linear-gradient(135deg, var(--green-850) 0%, var(--green-600) 100%);
+  color: var(--white);
   text-align: center;
+  box-shadow: 0 20px 40px rgba(11, 107, 58, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,212,71,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.final-cta span {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--yellow-400);
+  border: 1px solid rgba(255, 212, 71, 0.3);
+  backdrop-filter: blur(8px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.final-cta h2 {
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  max-width: 600px;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
 }
 
 .final-cta .primary-cta {
   width: auto;
-  min-width: 240px;
+  min-width: 280px;
+  background: var(--yellow-400);
+  color: var(--green-900);
+  font-size: 1.1rem;
+  padding: 18px 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(255, 212, 71, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 2;
+}
+
+.final-cta .primary-cta:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 25px rgba(255, 212, 71, 0.4);
 }
 
 .site-footer {
