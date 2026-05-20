@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Tabela de Medidas Caomisa Brasil</title>
+  <desc id="desc">Tabela de medidas da camiseta Brasil para pets nos tamanhos PP, P, M, G e GG.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffef8" />
+      <stop offset="100%" stop-color="#f4f7ef" />
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe64b" />
+      <stop offset="100%" stop-color="#ffdb16" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#0b6b3a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)" />
+  <circle cx="1030" cy="170" r="120" fill="#fff1a3" opacity="0.65" />
+  <circle cx="180" cy="1010" r="140" fill="#dff5d4" opacity="0.85" />
+  <g filter="url(#shadow)">
+    <rect x="70" y="120" width="1060" height="950" rx="44" fill="#ffffff" />
+  </g>
+  <text x="120" y="210" fill="#083c2b" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="54" font-weight="800">
+    Tabela de Medidas: Camiseta Brasil
+  </text>
+  <text x="120" y="265" fill="#69806d" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="500">
+    Compare o tamanho antes da compra
+  </text>
+
+  <g transform="translate(930 155)">
+    <path d="M24 0c-22 2-38 20-39 42v16c0 10 4 18 11 24l15 12-11 58c-3 16 9 32 26 34 13 2 25-6 31-18l3-7 3 7c6 12 18 20 31 18 17-2 29-18 26-34L109 94l15-12c7-6 11-14 11-24V42C134 20 118 2 96 0c-17-1-31 6-41 18C55 6 41-1 24 0z" fill="#0b6b3a"/>
+    <path d="M39 18c-12 2-22 12-22 24v16c0 4 2 8 5 11l21 16-14 73c-1 4 2 8 6 8 2 0 5-2 6-5l10-22 10 22c1 3 4 5 6 5 4 0 7-4 6-8L59 85l21-16c3-3 5-7 5-11V42c0-12-10-22-22-24-8 0-15 4-20 11-5-7-12-11-20-11z" fill="#ffffff"/>
+    <path d="M20 80h70l14 84c4 24-14 46-39 46H39C14 210-4 188 0 164L20 80z" fill="url(#shirt)"/>
+  </g>
+
+  <g transform="translate(110 330)">
+    <rect width="980" height="690" rx="28" fill="#f7faf3" />
+    <rect x="0" y="0" width="980" height="120" rx="28" fill="#eef5e8" />
+
+    <text x="46" y="76" fill="#083c2b" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="34" font-weight="700">Tamanho</text>
+    <text x="280" y="76" fill="#083c2b" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="34" font-weight="700">Pescoco</text>
+    <text x="520" y="76" fill="#083c2b" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="34" font-weight="700">Barriga</text>
+    <text x="760" y="76" fill="#083c2b" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="34" font-weight="700">Comprimento</text>
+
+    <text x="46" y="176" fill="#0b6b3a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="800">PP</text>
+    <text x="280" y="176" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">23 cm</text>
+    <text x="520" y="176" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">42 cm</text>
+    <text x="760" y="176" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">27 cm</text>
+
+    <text x="46" y="286" fill="#0b6b3a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="800">P</text>
+    <text x="280" y="286" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">26 cm</text>
+    <text x="520" y="286" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">50 cm</text>
+    <text x="760" y="286" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">30 cm</text>
+
+    <text x="46" y="396" fill="#0b6b3a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="800">M</text>
+    <text x="280" y="396" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">36 cm</text>
+    <text x="520" y="396" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">56 cm</text>
+    <text x="760" y="396" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">35 cm</text>
+
+    <text x="46" y="506" fill="#0b6b3a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="800">G</text>
+    <text x="280" y="506" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">38 cm</text>
+    <text x="520" y="506" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">60 cm</text>
+    <text x="760" y="506" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">38 cm</text>
+
+    <text x="46" y="616" fill="#0b6b3a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="800">GG</text>
+    <text x="280" y="616" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">43 cm</text>
+    <text x="520" y="616" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">68 cm</text>
+    <text x="760" y="616" fill="#222222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="44" font-weight="700">48 cm</text>
+
+    <g stroke="#d8e3d4" stroke-width="2">
+      <line x1="0" y1="120" x2="980" y2="120" />
+      <line x1="0" y1="210" x2="980" y2="210" />
+      <line x1="0" y1="320" x2="980" y2="320" />
+      <line x1="0" y1="430" x2="980" y2="430" />
+      <line x1="0" y1="540" x2="980" y2="540" />
+    </g>
+  </g>
+</svg>
