@@ -89,9 +89,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 12px clamp(16px, 5vw, 64px);
-  background: rgba(255, 253, 245, 0.92);
-  border-bottom: 1px solid rgba(8, 60, 43, 0.12);
+  padding: 6px clamp(16px, 5vw, 64px);
+  background: rgba(8, 60, 43, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(14px);
 }
 
@@ -103,7 +103,7 @@ a {
 }
 
 .brand-logo {
-  width: 68px;
+  width: 48px;
   height: auto;
   object-fit: contain;
   transform: none;
@@ -113,12 +113,12 @@ a {
   display: flex;
   align-items: center;
   gap: 18px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.94rem;
 }
 
 .site-header nav a:hover {
-  color: var(--green-700);
+  color: var(--white);
 }
 
 .header-cta,
