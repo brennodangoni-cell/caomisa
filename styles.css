@@ -346,6 +346,18 @@ h1 {
   color: var(--muted);
 }
 
+.sales-proof {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 8px;
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: var(--green-100);
+  color: var(--green-700);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .secure-badge {
   display: inline-flex;
   align-items: center;
