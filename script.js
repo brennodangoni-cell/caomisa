@@ -203,6 +203,9 @@ function initCheckout() {
 
 function initVideoSlot() {
   const shell = document.querySelector("[data-video-placeholder]");
+  if (!shell) {
+    return;
+  }
 
   shell.addEventListener("click", () => {
     if (!STORE_CONFIG.vslEmbedUrl) {
@@ -223,25 +226,4 @@ document.addEventListener("DOMContentLoaded", () => {
   initVideoSlot();
   updateSizeNote();
   updatePrice();
-});
-
-// Promo Countdown Timer
-document.addEventListener('DOMContentLoaded', () => {
-  const timerElement = document.getElementById('countdown-timer');
-  if (!timerElement) return;
-
-  let timeInSeconds = 14 * 60 + 43;
-
-  const interval = setInterval(() => {
-    if (timeInSeconds <= 0) {
-      clearInterval(interval);
-      return;
-    }
-
-    timeInSeconds--;
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    
-    timerElement.textContent = `00:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }, 1000);
 });
