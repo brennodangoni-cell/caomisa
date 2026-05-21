@@ -11,7 +11,7 @@ const STORE_CONFIG = {
 
 const sizes = {
   PP: { length: 27, belly: 42, neck: 23, checkoutUrl: "https://caomisa.pay.yampi.com.br/r/GTGZ3K18CI" },
-  P: { length: 30, belly: 50, neck: 26, soldOut: true },
+  P: { length: 30, belly: 50, neck: 26, checkoutUrl: "https://caomisa.pay.yampi.com.br/r/QI7GMHR6MV" },
   M: { length: 35, belly: 56, neck: 36, checkoutUrl: "https://caomisa.pay.yampi.com.br/r/LPXHM0NDU9" },
   G: { length: 38, belly: 60, neck: 38, checkoutUrl: "https://caomisa.pay.yampi.com.br/r/5SCNKN19CN" },
   GG: { length: 48, belly: 68, neck: 43, checkoutUrl: "https://caomisa.pay.yampi.com.br/r/JI87HL0M1T" }
