@@ -18,7 +18,7 @@ const sizes = {
 };
 
 const packages = {
-  unit: { label: "1 camisa pet", price: 49.9 }
+  unit: { label: "1 camisa pet", price: 89.9 }
 };
 
 let selectedSize = "M";
@@ -41,7 +41,7 @@ function updatePrice() {
   const currentPrice = document.querySelector("#currentPrice");
   const installmentPrice = document.querySelector("#installmentPrice");
   const total = packages[selectedPackage].price * quantity;
-  const instValue = 6.64 * quantity;
+  const instValue = 9.15 * quantity;
   
   currentPrice.textContent = formatBRL(total);
   if(installmentPrice) {
