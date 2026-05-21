@@ -756,7 +756,6 @@ details p {
   width: clamp(150px, 20vw, 220px);
   height: auto;
   border-radius: 50%;
-  box-shadow: 0 0 28px rgba(255, 212, 71, 0.28);
 }
 
 .cta-bone {
@@ -800,6 +799,8 @@ details p {
 }
 
 .final-cta h2 {
+  display: grid;
+  gap: 4px;
   max-width: 660px;
   margin-bottom: 0;
   color: var(--white);
@@ -808,10 +809,25 @@ details p {
   text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.final-cta h2 strong {
+.offer-price-line {
+  display: block;
+  color: var(--white);
+}
+
+.offer-old-price {
+  display: inline-block;
+  font-size: 0.78em;
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--yellow-400);
+  opacity: 0.92;
+}
+
+.final-cta h2 .offer-new-price {
   display: inline-block;
   color: var(--yellow-400);
-  font-size: 1.2em;
+  font-size: 1.34em;
+  line-height: 0.95;
 }
 
 .final-cta p {
@@ -825,6 +841,7 @@ details p {
 .final-benefits {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  width: min(100%, 620px);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
@@ -856,7 +873,7 @@ details p {
 }
 
 .final-cta .primary-cta {
-  width: min(100%, 560px);
+  width: min(100%, 620px);
   min-width: 0;
   background: var(--yellow-400);
   color: var(--green-900);
