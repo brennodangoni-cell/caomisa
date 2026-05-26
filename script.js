@@ -680,7 +680,13 @@ function loadCollections() {
 }
 
 function saveCollectionsLocal() {
-  localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
+  try {
+    localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      showToast("Alerta: Limite de dados local atingido. Reduza o tamanho das fotos.");
+    }
+  }
 }
 
 async function persistCollections() {
@@ -3298,7 +3304,7 @@ function bindAdminImageUpload({ fileId, inputId, previewId, maxWidth, maxHeight,
 
     try {
       showToast(`Processando ${label}...`);
-      const webpDataUrl = await convertToWebP(file, maxWidth, maxHeight, 0.99);
+      const webpDataUrl = await convertToWebP(file, maxWidth, maxHeight, 0.82);
       const input = document.getElementById(inputId);
       const preview = document.getElementById(previewId);
       if (input) input.value = webpDataUrl;
@@ -4169,8 +4175,8 @@ function bindEvents() {
     fileId: "collection-image-file",
     inputId: "collection-image-url",
     previewId: "collection-image-preview",
-    maxWidth: 1000,
-    maxHeight: 1000,
+    maxWidth: 600,
+    maxHeight: 600,
     label: "foto da coleção"
   });
 
