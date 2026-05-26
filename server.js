@@ -1517,12 +1517,51 @@ async function handleYampiCheckout(req, res) {
   });
 }
 
+async function handleUpload(req, res) {
+  try {
+    const body = await readRequestJsonWithLimit(req, 10_000_000);
+    if (!body.image) {
+      sendJson(res, 400, { ok: false, message: "Imagem ausente" });
+      return;
+    }
+
+    const match = body.image.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
+    if (!match) {
+      sendJson(res, 400, { ok: false, message: "Formato invalido" });
+      return;
+    }
+
+    const ext = match[1] === "jpeg" ? "jpg" : match[1];
+    const base64Data = match[2];
+
+    const uploadDir = path.join(root, "assets", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const fileName = `upload-${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`;
+    const filePath = path.join(uploadDir, fileName);
+
+    fs.writeFileSync(filePath, Buffer.from(base64Data, "base64"));
+
+    sendJson(res, 200, { ok: true, url: `/assets/uploads/${fileName}` });
+  } catch (error) {
+    sendJson(res, 500, { ok: false, message: "Erro ao salvar upload" });
+  }
+}
+
 async function handleApi(req, res) {
   const url = new URL(req.url || "/", `http://localhost:${port}`);
 
   try {
     if (url.pathname === "/api/admin/login" && req.method === "POST") {
       await handleAdminLogin(req, res);
+      return true;
+    }
+
+    if (url.pathname === "/api/upload" && req.method === "POST") {
+      if (!requireAdmin(req, res)) return true;
+      await handleUpload(req, res);
       return true;
     }
 

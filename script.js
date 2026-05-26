@@ -3305,11 +3305,21 @@ function bindAdminImageUpload({ fileId, inputId, previewId, maxWidth, maxHeight,
     try {
       showToast(`Processando ${label}...`);
       const webpDataUrl = await convertToWebP(file, maxWidth, maxHeight, 0.82);
+      
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ image: webpDataUrl })
+      });
+      
+      const data = await response.json();
+      if (!data.ok) throw new Error(data.message || "Erro no upload");
+
       const input = document.getElementById(inputId);
       const preview = document.getElementById(previewId);
-      if (input) input.value = webpDataUrl;
-      if (preview) preview.src = webpDataUrl;
-      showToast(`${label} salva em WebP.`);
+      if (input) input.value = data.url;
+      if (preview) preview.src = data.url;
+      showToast(`${label} salva e enviada.`);
     } catch (err) {
       console.error(err);
       showToast("Erro ao processar imagem.");
