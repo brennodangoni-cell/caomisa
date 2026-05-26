@@ -239,7 +239,7 @@ const defaultCollections = [
 ];
 
 let products = loadProducts();
-let banners = loadBanners();
+let banners = defaultBanners;
 let siteContent = loadSiteContent();
 let collections = loadCollections();
 let categories = loadCategories();
@@ -570,7 +570,7 @@ function normalizeProduct(product) {
 }
 
 function loadBanners() {
-  return banners || defaultBanners;
+  return (banners && banners.length) ? banners : defaultBanners;
 }
 
 function saveBanners() {
