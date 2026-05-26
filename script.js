@@ -418,24 +418,11 @@ function resolveProductReference(reference) {
 }
 
 function loadProducts() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || "null");
-    if (Array.isArray(saved) && saved.length) {
-      return saved.filter((p) => p.yampiProductId).map((p) => {
-        if (!p.images || !Array.isArray(p.images) || !p.images.length) {
-          p.images = [p.image || "assets/foto-principal.webp"];
-        }
-        return normalizeProduct(p);
-      });
-    }
-    return [];
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 function saveProducts() {
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products.filter((product) => product.yampiProductId)));
+  // Persistence handled via server endpoints
 }
 
 function defaultCategories() {
@@ -443,20 +430,11 @@ function defaultCategories() {
 }
 
 function loadCategories() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(CATEGORIES_KEY) || "null");
-    if (Array.isArray(saved)) {
-      return saved.filter(Boolean).map((category) => String(category).trim()).filter(Boolean);
-    }
-  } catch {
-    return defaultCategories();
-  }
-
   return defaultCategories();
 }
 
 function saveCategories() {
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+  // Persistence handled via server endpoints
 }
 
 function mergeCatalogCategories(categoryItems = [], productItems = products) {
@@ -592,19 +570,42 @@ function normalizeProduct(product) {
 }
 
 function loadBanners() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(BANNERS_KEY) || "null");
-    if (Array.isArray(saved) && saved.length) {
-      return saved;
-    }
-    return defaultBanners;
-  } catch {
-    return defaultBanners;
-  }
+  return defaultBanners;
 }
 
 function saveBanners() {
-  localStorage.setItem(BANNERS_KEY, JSON.stringify(banners));
+  // Persistence handled via persistBanners
+}
+
+async function persistBanners() {
+  try {
+    const response = await fetch("/api/banners", {
+      method: "PUT",
+      headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ banners })
+    });
+    const data = await response.json();
+    if (response.ok && data.ok && Array.isArray(data.banners)) {
+      banners = data.banners;
+    }
+  } catch (error) {
+    console.error("Erro ao persistir banners:", error);
+    showToast("Erro ao salvar banners no servidor.");
+  }
+}
+
+async function loadBannersFromApi() {
+  try {
+    const response = await fetch("/api/banners", { cache: "no-store" });
+    const data = await response.json();
+    if (response.ok && data.ok && Array.isArray(data.banners)) {
+      banners = data.banners;
+      renderHomeBanners();
+      renderAdminBanners();
+    }
+  } catch (error) {
+    console.error("Erro ao carregar banners do servidor:", error);
+  }
 }
 
 function normalizeSiteContent(saved = {}) {
@@ -621,16 +622,42 @@ function normalizeSiteContent(saved = {}) {
 }
 
 function loadSiteContent() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(SITE_CONTENT_KEY) || "null");
-    return normalizeSiteContent(saved || {});
-  } catch {
-    return normalizeSiteContent();
-  }
+  return normalizeSiteContent();
 }
 
 function saveSiteContent() {
-  localStorage.setItem(SITE_CONTENT_KEY, JSON.stringify(siteContent));
+  // Persistence handled via persistSiteContent
+}
+
+async function persistSiteContent() {
+  try {
+    const response = await fetch("/api/site-content", {
+      method: "PUT",
+      headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ siteContent })
+    });
+    const data = await response.json();
+    if (response.ok && data.ok && data.siteContent) {
+      siteContent = normalizeSiteContent(data.siteContent);
+    }
+  } catch (error) {
+    console.error("Erro ao persistir siteContent:", error);
+    showToast("Erro ao salvar conteudo do site no servidor.");
+  }
+}
+
+async function loadSiteContentFromApi() {
+  try {
+    const response = await fetch("/api/site-content", { cache: "no-store" });
+    const data = await response.json();
+    if (response.ok && data.ok && data.siteContent) {
+      siteContent = normalizeSiteContent(data.siteContent);
+      renderSiteContent();
+      renderAdminSiteContentForm();
+    }
+  } catch (error) {
+    console.error("Erro ao carregar conteudo do site do servidor:", error);
+  }
 }
 
 function normalizeCollection(collection = {}, index = 0) {
@@ -671,26 +698,14 @@ function normalizeCollections(source = defaultCollections) {
 }
 
 function loadCollections() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(COLLECTIONS_KEY) || "null");
-    return normalizeCollections(Array.isArray(saved) && saved.length ? saved : defaultCollections);
-  } catch {
-    return normalizeCollections(defaultCollections);
-  }
+  return normalizeCollections(defaultCollections);
 }
 
 function saveCollectionsLocal() {
-  try {
-    localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
-  } catch (e) {
-    if (e.name === 'QuotaExceededError') {
-      showToast("Alerta: Limite de dados local atingido. Reduza o tamanho das fotos.");
-    }
-  }
+  // Persistence handled via persistCollections
 }
 
 async function persistCollections() {
-  saveCollectionsLocal();
   try {
     const response = await fetch("/api/collections", {
       method: "PUT",
@@ -700,10 +715,10 @@ async function persistCollections() {
     const data = await response.json();
     if (response.ok && data.ok && Array.isArray(data.collections)) {
       collections = normalizeCollections(data.collections);
-      saveCollectionsLocal();
     }
-  } catch {
-    // LocalStorage keeps the admin usable even before the local server is restarted.
+  } catch (error) {
+    console.error("Erro ao persistir coleções:", error);
+    showToast("Erro ao salvar coleções no servidor.");
   }
 }
 
@@ -720,7 +735,6 @@ async function loadCollectionsFromApi({ silent = true } = {}) {
 
     if (previousHash !== currentHash) {
       collections = newCollections;
-      saveCollectionsLocal();
       renderHomeCollections();
       renderAdminCollections();
       renderProducts();
@@ -3198,7 +3212,7 @@ function renderAdminBanners() {
     .join("");
 }
 
-function saveBanner(banner) {
+async function saveBanner(banner) {
   const existingIndex = banners.findIndex((b) => b.id === banner.id);
 
   if (existingIndex >= 0) {
@@ -3213,7 +3227,7 @@ function saveBanner(banner) {
     banners.push({ ...banner, id });
   }
 
-  saveBanners();
+  await persistBanners();
   renderHomeBanners();
   renderAdminBanners();
 }
@@ -3829,10 +3843,11 @@ function bindEvents() {
       const confirmed = window.confirm(`Excluir banner "${banner.title}"?`);
       if (!confirmed) return;
       banners = banners.filter((b) => b.id !== banner.id);
-      saveBanners();
-      renderHomeBanners();
-      renderAdminBanners();
-      showToast("Banner excluído.");
+      persistBanners().then(() => {
+        renderHomeBanners();
+        renderAdminBanners();
+        showToast("Banner excluído.");
+      });
     }
 
     if (target.matches("[data-admin-tab]")) {
@@ -4052,7 +4067,7 @@ function bindEvents() {
 
   const bannerForm = document.getElementById("admin-banner-form");
   if (bannerForm) {
-    bannerForm.addEventListener("submit", (event) => {
+    bannerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       const title = form.elements.title?.value.trim() || `Banner ${banners.length + 1}`;
@@ -4069,7 +4084,7 @@ function bindEvents() {
         mobileImage: form.elements.mobileImage.value.trim() || PLACEHOLDER_IMAGE
       };
 
-      saveBanner(banner);
+      await saveBanner(banner);
       cancelBannerEdit();
       showToast("Banner salvo com sucesso.");
     });
@@ -4083,7 +4098,7 @@ function bindEvents() {
 
   const siteContentForm = document.getElementById("admin-site-content-form");
   if (siteContentForm) {
-    siteContentForm.addEventListener("submit", (event) => {
+    siteContentForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       siteContent = normalizeSiteContent({
@@ -4097,7 +4112,7 @@ function bindEvents() {
           photoTwo: form.elements.aboutPhotoTwo.value.trim() || PLACEHOLDER_IMAGE
         }
       });
-      saveSiteContent();
+      await persistSiteContent();
       renderSiteContent();
       renderAdminSiteContentForm();
       showToast("Banner inferior e fotos salvos.");
@@ -4278,6 +4293,8 @@ document.addEventListener("DOMContentLoaded", () => {
   route();
   loadCatalogProducts({ silent: true });
   loadCollectionsFromApi({ silent: true });
+  loadBannersFromApi();
+  loadSiteContentFromApi();
   startCollectionCarousel();
   iconRefresh();
 });

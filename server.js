@@ -11,6 +11,8 @@ const productCachePath = path.join(dataDir, "products-cache.json");
 const productOverridesPath = path.join(dataDir, "product-overrides.json");
 const productReviewsPath = path.join(dataDir, "product-reviews.json");
 const siteCollectionsPath = path.join(dataDir, "site-collections.json");
+const siteBannersPath = path.join(dataDir, "site-banners.json");
+const siteContentPath = path.join(dataDir, "site-content.json");
 const webhookConfigPath = path.join(dataDir, "yampi-webhook.json");
 
 const YAMPI_PRODUCT_EVENTS = [
@@ -650,6 +652,114 @@ async function writeSiteCollections(collections) {
   await writeJsonData(siteCollectionsPath, {
     updatedAt: new Date().toISOString(),
     collections
+  });
+}
+
+const defaultBanners = [
+  {
+    id: "banner-brasil",
+    eyebrow: "Coleção Brasil Pet",
+    title: "Torça com Conforto",
+    subtitle: "Camisas leves em verde e amarelo feitas sob medida para o seu cachorro vibrar junto com você.",
+    linkUrl: "/produtos?categoria=Brasil",
+    linkText: "Ver Coleção Brasil",
+    desktopImage: "assets/banner-placeholder.svg",
+    mobileImage: "assets/banner-placeholder.svg"
+  },
+  {
+    id: "banner-inverno",
+    eyebrow: "Coleção Inverno",
+    title: "Aqueça seu Melhor Amigo",
+    subtitle: "Moletons quentinhos e macios para garantir proteção nos dias frios com total estilo.",
+    linkUrl: "/produtos?categoria=Inverno",
+    linkText: "Ver Moletons",
+    desktopImage: "assets/banner-placeholder.svg",
+    mobileImage: "assets/banner-placeholder.svg"
+  },
+  {
+    id: "banner-kits",
+    eyebrow: "Kits Promocionais",
+    title: "Leve Mais, Pague Menos",
+    subtitle: "Kits especiais com duas ou mais roupinhas para renovar o guarda-roupa com frete grátis.",
+    linkUrl: "/produtos?categoria=Kits",
+    linkText: "Aproveitar Oferta",
+    desktopImage: "assets/banner-placeholder.svg",
+    mobileImage: "assets/banner-placeholder.svg"
+  }
+];
+
+const defaultSiteContent = {
+  lowerBanner: {
+    linkUrl: "/produtos?categoria=Inverno",
+    desktopImage: "assets/banner-placeholder.svg",
+    mobileImage: "assets/banner-placeholder.svg"
+  },
+  aboutPhotos: {
+    photoOne: "assets/about-caomisa-team.webp",
+    photoTwo: "assets/banner-placeholder.svg"
+  }
+};
+
+function sanitizeBanners(banners = []) {
+  const source = Array.isArray(banners) ? banners : [];
+  return source.map((banner, index) => {
+    return {
+      id: cleanText(banner.id || `banner-${index}`),
+      eyebrow: cleanText(banner.eyebrow),
+      title: cleanText(banner.title),
+      subtitle: cleanText(banner.subtitle),
+      linkUrl: cleanText(banner.linkUrl),
+      linkText: cleanText(banner.linkText),
+      desktopImage: sanitizeStoredImage(banner.desktopImage || banner.image, "assets/banner-placeholder.svg"),
+      mobileImage: sanitizeStoredImage(banner.mobileImage || banner.image, "assets/banner-placeholder.svg")
+    };
+  });
+}
+
+function sanitizeSiteContent(content = {}) {
+  const c = content || {};
+  const lowerBanner = c.lowerBanner || {};
+  const aboutPhotos = c.aboutPhotos || {};
+  return {
+    lowerBanner: {
+      linkUrl: cleanText(lowerBanner.linkUrl),
+      desktopImage: sanitizeStoredImage(lowerBanner.desktopImage, "assets/banner-placeholder.svg"),
+      mobileImage: sanitizeStoredImage(lowerBanner.mobileImage, "assets/banner-placeholder.svg")
+    },
+    aboutPhotos: {
+      photoOne: sanitizeStoredImage(aboutPhotos.photoOne, "assets/about-caomisa-team.webp"),
+      photoTwo: sanitizeStoredImage(aboutPhotos.photoTwo, "assets/banner-placeholder.svg")
+    }
+  };
+}
+
+async function readSiteBanners() {
+  const payload = await readJsonData(siteBannersPath);
+  if (!payload || !Array.isArray(payload.banners)) {
+    return defaultBanners;
+  }
+  return sanitizeBanners(payload.banners);
+}
+
+async function writeSiteBanners(banners) {
+  await writeJsonData(siteBannersPath, {
+    updatedAt: new Date().toISOString(),
+    banners
+  });
+}
+
+async function readSiteContent() {
+  const payload = await readJsonData(siteContentPath);
+  if (!payload || !payload.siteContent) {
+    return defaultSiteContent;
+  }
+  return sanitizeSiteContent(payload.siteContent);
+}
+
+async function writeSiteContent(siteContent) {
+  await writeJsonData(siteContentPath, {
+    updatedAt: new Date().toISOString(),
+    siteContent
   });
 }
 
@@ -1550,10 +1660,66 @@ async function handleUpload(req, res) {
   }
 }
 
+async function handleBannersGet(res) {
+  sendJson(res, 200, {
+    ok: true,
+    banners: await readSiteBanners()
+  });
+}
+
+async function handleBannersPut(req, res) {
+  const body = await readRequestJsonWithLimit(req, 8_000_000);
+  const banners = sanitizeBanners(body.banners);
+  await writeSiteBanners(banners);
+  sendJson(res, 200, {
+    ok: true,
+    banners
+  });
+}
+
+async function handleSiteContentGet(res) {
+  sendJson(res, 200, {
+    ok: true,
+    siteContent: await readSiteContent()
+  });
+}
+
+async function handleSiteContentPut(req, res) {
+  const body = await readRequestJsonWithLimit(req, 8_000_000);
+  const siteContent = sanitizeSiteContent(body.siteContent);
+  await writeSiteContent(siteContent);
+  sendJson(res, 200, {
+    ok: true,
+    siteContent
+  });
+}
+
 async function handleApi(req, res) {
   const url = new URL(req.url || "/", `http://localhost:${port}`);
 
   try {
+    if (url.pathname === "/api/banners" && req.method === "GET") {
+      await handleBannersGet(res);
+      return true;
+    }
+
+    if (url.pathname === "/api/banners" && req.method === "PUT") {
+      if (!requireAdmin(req, res)) return true;
+      await handleBannersPut(req, res);
+      return true;
+    }
+
+    if (url.pathname === "/api/site-content" && req.method === "GET") {
+      await handleSiteContentGet(res);
+      return true;
+    }
+
+    if (url.pathname === "/api/site-content" && req.method === "PUT") {
+      if (!requireAdmin(req, res)) return true;
+      await handleSiteContentPut(req, res);
+      return true;
+    }
+
     if (url.pathname === "/api/admin/login" && req.method === "POST") {
       await handleAdminLogin(req, res);
       return true;
