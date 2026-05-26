@@ -1202,114 +1202,34 @@ function collectionScrollStep(direction = 1) {
   const track = qs("[data-collection-track]");
   if (!track) return;
 
-  prepareCollectionLoop();
   const card = track.querySelector("a");
   const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "14") || 14;
   const step = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
-  const loopWidth = Number(track.dataset.loopWidth || 0);
+  const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+  const target = track.scrollLeft + direction * step;
+  const next = direction > 0 && target >= maxScroll - 4
+    ? 0
+    : direction < 0 && target <= 4
+      ? maxScroll
+      : target;
 
-  if (loopWidth) {
-    if (direction < 0 && track.scrollLeft <= loopWidth + 4) {
-      track.scrollLeft += loopWidth;
-    }
-    if (direction > 0 && track.scrollLeft >= loopWidth * 2 - step - 4) {
-      track.scrollLeft -= loopWidth;
-    }
-  }
-
-  track.scrollBy({ left: direction * step, behavior: "smooth" });
-
-  window.setTimeout(() => normalizeCollectionLoop(track), 620);
-}
-
-function normalizeCollectionLoop(track = qs("[data-collection-track]")) {
-  if (!track) return;
-  const loopWidth = Number(track.dataset.loopWidth || 0);
-  if (!loopWidth) return;
-
-  if (track.scrollLeft >= loopWidth * 2) {
-    track.scrollLeft -= loopWidth;
-  } else if (track.scrollLeft < loopWidth) {
-    track.scrollLeft += loopWidth;
-  }
-}
-
-function bindCollectionLoop(track) {
-  if (track.dataset.loopBound === "true") return;
-  track.dataset.loopBound = "true";
-  track.addEventListener(
-    "scroll",
-    () => {
-      if (collectionNormalizeFrame) cancelAnimationFrame(collectionNormalizeFrame);
-      collectionNormalizeFrame = requestAnimationFrame(() => normalizeCollectionLoop(track));
-    },
-    { passive: true }
-  );
-}
-
-function prepareCollectionLoop() {
-  const track = qs("[data-collection-track]");
-  if (!track) return;
-
-  const isMobile = window.matchMedia("(max-width: 760px)").matches;
-  if (!isMobile) {
-    qsa("[data-collection-clone]", track).forEach((clone) => clone.remove());
-    track.dataset.loopReady = "";
-    track.dataset.loopWidth = "";
-    track.scrollLeft = 0;
-    return;
-  }
-
-  if (track.dataset.loopReady === "true") {
-    bindCollectionLoop(track);
-    return;
-  }
-
-  qsa("[data-collection-clone]", track).forEach((clone) => clone.remove());
-
-  const originals = qsa("a:not([data-collection-clone])", track);
-  if (!originals.length) return;
-
-  originals.forEach((item) => {
-    item.dataset.collectionOriginal = "true";
-  });
-
-  const firstOriginal = originals[0];
-  originals.forEach((item) => {
-    const beforeClone = item.cloneNode(true);
-    beforeClone.dataset.collectionClone = "before";
-    beforeClone.setAttribute("aria-hidden", "true");
-    beforeClone.setAttribute("tabindex", "-1");
-    track.insertBefore(beforeClone, firstOriginal);
-  });
-
-  originals.forEach((item) => {
-    const afterClone = item.cloneNode(true);
-    afterClone.dataset.collectionClone = "after";
-    afterClone.setAttribute("aria-hidden", "true");
-    afterClone.setAttribute("tabindex", "-1");
-    track.appendChild(afterClone);
-  });
-
-  track.dataset.loopReady = "true";
-  requestAnimationFrame(() => {
-    track.dataset.loopWidth = String(track.scrollWidth / 3);
-    track.scrollLeft = Number(track.dataset.loopWidth || 0);
-    bindCollectionLoop(track);
-  });
+  track.scrollTo({ left: Math.max(0, Math.min(next, maxScroll)), behavior: "smooth" });
 }
 
 function startCollectionCarousel() {
   const track = qs("[data-collection-track]");
   const isMobile = window.matchMedia("(max-width: 760px)").matches;
-  if (!track || !isMobile) {
-    stopCollectionCarousel();
+  stopCollectionCarousel();
+  if (!track) return;
+
+  qsa("[data-collection-clone]", track).forEach((clone) => clone.remove());
+  track.dataset.loopReady = "";
+  track.dataset.loopWidth = "";
+
+  if (!isMobile) {
+    track.scrollLeft = 0;
     return;
   }
-
-  prepareCollectionLoop();
-  stopCollectionCarousel();
-  collectionInterval = setInterval(() => collectionScrollStep(1), 4000);
 }
 
 function stopCollectionCarousel() {

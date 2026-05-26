@@ -597,9 +597,13 @@ a {
 }
 
 .banner-slide {
-  display: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease-in-out;
   min-height: clamp(320px, 34vw, 520px);
-  position: relative;
+  display: flex;
   align-items: center;
   padding: 0;
   isolation: isolate;
@@ -613,7 +617,9 @@ a {
 }
 
 .banner-slide.active {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .banner-slide::before {
@@ -4419,17 +4425,23 @@ details p {
 
   .collection-carousel {
     width: 100%;
-    padding: 0 0 4px;
+    padding: 0 0 6px;
+    overflow: visible;
   }
 
   .collection-grid {
     display: flex;
     gap: 14px;
     overflow-x: auto;
+    overflow-y: visible;
     scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: max(18px, calc((100vw - min(100vw - 32px, 520px)) / 2 + 18px));
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
-    padding: 0 calc((100vw - min(100vw - 32px, 520px)) / 2 + 22px);
+    padding: 6px max(18px, calc((100vw - min(100vw - 32px, 520px)) / 2 + 18px)) 10px;
   }
 
   .collection-grid::-webkit-scrollbar {
@@ -4437,8 +4449,9 @@ details p {
   }
 
   .collection-grid a {
-    flex: 0 0 clamp(166px, 43vw, 190px);
-    scroll-snap-align: center;
+    flex: 0 0 clamp(172px, 56vw, 216px);
+    min-width: 0;
+    scroll-snap-align: start;
     grid-template-rows: auto auto;
   }
 
