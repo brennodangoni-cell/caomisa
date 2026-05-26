@@ -570,7 +570,7 @@ function normalizeProduct(product) {
 }
 
 function loadBanners() {
-  return defaultBanners;
+  return banners || defaultBanners;
 }
 
 function saveBanners() {
