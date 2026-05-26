@@ -3927,20 +3927,30 @@ function bindEvents() {
       if (!file) return;
 
       try {
-        showToast("Processando foto do depoimento...");
+        showToast("Processando e enviando foto...");
         const webpDataUrl = await convertToWebP(file, 900, 900, 0.9);
+        
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ image: webpDataUrl })
+        });
+        const data = await response.json();
+        if (!data.ok) throw new Error(data.message || "Erro no upload");
+
+        const uploadedUrl = data.url;
         const form = qs("[data-product-form]");
-        if (form?.elements.productReviewImage) form.elements.productReviewImage.value = webpDataUrl;
+        if (form?.elements.productReviewImage) form.elements.productReviewImage.value = uploadedUrl;
         const preview = qs("[data-product-review-photo-preview]", form);
         if (preview) {
-          preview.src = webpDataUrl;
+          preview.src = uploadedUrl;
           preview.hidden = false;
         }
         productReviewPhotoInput.value = "";
-        showToast("Foto adicionada ao depoimento.");
+        showToast("Foto do depoimento enviada.");
       } catch (error) {
         console.error(error);
-        showToast("Erro ao processar foto do depoimento.");
+        showToast("Erro ao processar/enviar foto do depoimento.");
       }
       return;
     }
@@ -4125,60 +4135,48 @@ function bindEvents() {
       const file = event.target.files[0];
       if (!file) return;
       try {
-        showToast("Processando imagem...");
+        showToast("Processando e enviando imagem...");
         const webpDataUrl = await convertToWebP(file, 1000, 1000, 0.94);
-        if (!selectedGalleryImages.includes(webpDataUrl)) {
-          selectedGalleryImages.push(webpDataUrl);
+        
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ image: webpDataUrl })
+        });
+        const data = await response.json();
+        if (!data.ok) throw new Error(data.message || "Erro no upload");
+
+        const uploadedUrl = data.url;
+        if (!selectedGalleryImages.includes(uploadedUrl)) {
+          selectedGalleryImages.push(uploadedUrl);
         }
-        selectedMainImage = webpDataUrl;
+        selectedMainImage = uploadedUrl;
         renderPhotoSelector();
-        showToast("Imagem adicionada.");
+        showToast("Imagem adicionada e enviada.");
       } catch (err) {
         console.error(err);
-        showToast("Erro ao processar imagem.");
+        showToast("Erro ao processar/enviar imagem.");
       }
     });
   }
 
-  const deskFile = document.getElementById("banner-desktop-file");
-  if (deskFile) {
-    deskFile.addEventListener("change", async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      try {
-        showToast("Processando imagem desktop...");
-        const webpDataUrl = await convertToWebP(file, 1920, 600, 0.99);
-        const input = document.getElementById("banner-desktop-url");
-        if (input) input.value = webpDataUrl;
-        const img = document.getElementById("banner-desktop-preview");
-        if (img) img.src = webpDataUrl;
-        showToast("Desktop WebP ok!");
-      } catch (err) {
-        console.error(err);
-        showToast("Erro ao processar imagem.");
-      }
-    });
-  }
+  bindAdminImageUpload({
+    fileId: "banner-desktop-file",
+    inputId: "banner-desktop-url",
+    previewId: "banner-desktop-preview",
+    maxWidth: 1920,
+    maxHeight: 600,
+    label: "imagem desktop"
+  });
 
-  const mobFile = document.getElementById("banner-mobile-file");
-  if (mobFile) {
-    mobFile.addEventListener("change", async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      try {
-        showToast("Processando imagem mobile...");
-        const webpDataUrl = await convertToWebP(file, 800, 800, 0.99);
-        const input = document.getElementById("banner-mobile-url");
-        if (input) input.value = webpDataUrl;
-        const img = document.getElementById("banner-mobile-preview");
-        if (img) img.src = webpDataUrl;
-        showToast("Mobile WebP ok!");
-      } catch (err) {
-        console.error(err);
-        showToast("Erro ao processar imagem.");
-      }
-    });
-  }
+  bindAdminImageUpload({
+    fileId: "banner-mobile-file",
+    inputId: "banner-mobile-url",
+    previewId: "banner-mobile-preview",
+    maxWidth: 800,
+    maxHeight: 800,
+    label: "imagem mobile"
+  });
 
   const deskUrlInput = document.getElementById("banner-desktop-url");
   if (deskUrlInput) {
