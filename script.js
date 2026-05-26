@@ -708,11 +708,18 @@ async function loadCollectionsFromApi({ silent = true } = {}) {
     if (!response.ok || !data.ok) {
       throw new Error(data.message || "Erro ao carregar coleções.");
     }
-    collections = normalizeCollections(data.collections);
-    saveCollectionsLocal();
-    renderHomeCollections();
-    renderAdminCollections();
-    renderProducts();
+    const previousHash = JSON.stringify(collections);
+    const newCollections = normalizeCollections(data.collections);
+    const currentHash = JSON.stringify(newCollections);
+
+    if (previousHash !== currentHash) {
+      collections = newCollections;
+      saveCollectionsLocal();
+      renderHomeCollections();
+      renderAdminCollections();
+      renderProducts();
+      startCollectionCarousel();
+    }
   } catch (error) {
     if (!silent) showToast(error.message || "Erro ao carregar coleções.");
   }
@@ -2357,21 +2364,31 @@ function shouldAutoSyncProducts() {
 }
 
 function applyCatalogData(data) {
+  const previousProductsHash = JSON.stringify(products);
+  const previousCategoriesHash = JSON.stringify(categories);
+
   products = (data.products || []).map(normalizeProduct);
   cart = cart.filter((item) => products.some((product) => product.id === item.productId));
   categories = mergeCatalogCategories(data.categories, products);
   saveProducts();
   saveCart();
   saveCategories();
-  renderHomeCollections();
-  renderProducts();
-  renderCart();
-  renderAdminList();
-  renderAdminCategories();
-  renderAdminCollections();
-  updateAdminMetrics();
-  renderPhotoSelector();
-  route();
+
+  const currentProductsHash = JSON.stringify(products);
+  const currentCategoriesHash = JSON.stringify(categories);
+
+  if (previousProductsHash !== currentProductsHash || previousCategoriesHash !== currentCategoriesHash) {
+    renderHomeCollections();
+    renderProducts();
+    renderCart();
+    renderAdminList();
+    renderAdminCategories();
+    renderAdminCollections();
+    updateAdminMetrics();
+    renderPhotoSelector();
+    route();
+  }
+  
   if (data.syncedAt) {
     localStorage.setItem(INTEGRATION_SYNC_KEY, String(new Date(data.syncedAt).getTime() || Date.now()));
   }

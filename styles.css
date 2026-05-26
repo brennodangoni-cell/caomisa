@@ -180,8 +180,6 @@ a {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0) 48%),
     linear-gradient(90deg, #020b36 0%, #061d68 45%, #0a348e 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 22px rgba(2, 11, 54, 0.16);
   transition: var(--transition);
