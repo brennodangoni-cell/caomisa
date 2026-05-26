@@ -163,8 +163,8 @@ const defaultBanners = [
     subtitle: "Camisas leves em verde e amarelo feitas sob medida para o seu cachorro vibrar junto com você.",
     linkUrl: "/produtos?categoria=Brasil",
     linkText: "Ver Coleção Brasil",
-    desktopImage: PLACEHOLDER_IMAGE,
-    mobileImage: PLACEHOLDER_IMAGE
+    desktopImage: "assets/foto-3.webp",
+    mobileImage: "assets/foto-3.webp"
   },
   {
     id: "banner-inverno",
@@ -173,8 +173,8 @@ const defaultBanners = [
     subtitle: "Moletons quentinhos e macios para garantir proteção nos dias frios com total estilo.",
     linkUrl: "/produtos?categoria=Inverno",
     linkText: "Ver Moletons",
-    desktopImage: PLACEHOLDER_IMAGE,
-    mobileImage: PLACEHOLDER_IMAGE
+    desktopImage: "assets/foto-5.webp",
+    mobileImage: "assets/foto-5.webp"
   },
   {
     id: "banner-kits",
@@ -183,20 +183,20 @@ const defaultBanners = [
     subtitle: "Kits especiais com duas ou mais roupinhas para renovar o guarda-roupa com frete grátis.",
     linkUrl: "/produtos?categoria=Kits",
     linkText: "Aproveitar Oferta",
-    desktopImage: PLACEHOLDER_IMAGE,
-    mobileImage: PLACEHOLDER_IMAGE
+    desktopImage: "assets/foto-principal.webp",
+    mobileImage: "assets/foto-principal.webp"
   }
 ];
 
 const defaultSiteContent = {
   lowerBanner: {
-    linkUrl: "/produtos?categoria=Inverno",
-    desktopImage: PLACEHOLDER_IMAGE,
-    mobileImage: PLACEHOLDER_IMAGE
+    linkUrl: "/produtos?categoria=Brasil",
+    desktopImage: "assets/payment-methods-new.webp",
+    mobileImage: "assets/payment-methods-new.webp"
   },
   aboutPhotos: {
     photoOne: "assets/about-caomisa-team.webp",
-    photoTwo: PLACEHOLDER_IMAGE
+    photoTwo: "assets/foto-principal.webp"
   }
 };
 
@@ -631,6 +631,40 @@ function loadSiteContent() {
 
 function saveSiteContent() {
   localStorage.setItem(SITE_CONTENT_KEY, JSON.stringify(siteContent));
+}
+
+async function loadSiteContentFromApi({ silent = false } = {}) {
+  try {
+    const response = await fetch("/api/site-content", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.message || "Erro ao carregar banners.");
+    if (Array.isArray(data.banners) && data.banners.length) {
+      banners = data.banners;
+      localStorage.setItem(BANNERS_KEY, JSON.stringify(banners));
+    }
+    siteContent = normalizeSiteContent(data.siteContent || data);
+    saveSiteContent();
+    renderHomeBanners();
+    renderSiteContent();
+    renderAdminBanners();
+    renderAdminSiteContentForm();
+  } catch (error) {
+    if (!silent) showToast(error.message || "Erro ao carregar banners.");
+  }
+}
+
+async function saveSiteContentToApi() {
+  const response = await fetch("/api/site-content", {
+    method: "PUT",
+    headers: adminAuthHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({ banners, siteContent })
+  });
+  const data = await response.json();
+  if (!response.ok || !data.ok) throw new Error(data.message || "Erro ao salvar banners.");
+  banners = Array.isArray(data.banners) && data.banners.length ? data.banners : banners;
+  siteContent = normalizeSiteContent(data.siteContent || siteContent);
+  localStorage.setItem(BANNERS_KEY, JSON.stringify(banners));
+  saveSiteContent();
 }
 
 function normalizeCollection(collection = {}, index = 0) {
@@ -3239,7 +3273,7 @@ function renderAdminBanners() {
     .join("");
 }
 
-function saveBanner(banner) {
+async function saveBanner(banner) {
   const existingIndex = banners.findIndex((b) => b.id === banner.id);
 
   if (existingIndex >= 0) {
@@ -3255,6 +3289,7 @@ function saveBanner(banner) {
   }
 
   saveBanners();
+  await saveSiteContentToApi();
   renderHomeBanners();
   renderAdminBanners();
 }
@@ -3360,7 +3395,7 @@ function bindAdminImageUpload({ fileId, inputId, previewId, maxWidth, maxHeight,
 
 
 function bindEvents() {
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", async (event) => {
     // Star rating buttons selection
     const starSelectBtn = event.target.closest(".star-select-btn");
     if (starSelectBtn) {
@@ -3863,7 +3898,13 @@ function bindEvents() {
       saveBanners();
       renderHomeBanners();
       renderAdminBanners();
-      showToast("Banner excluído.");
+      try {
+        await saveSiteContentToApi();
+        showToast("Banner excluído.");
+      } catch (error) {
+        console.error(error);
+        showToast(error.message || "Erro ao excluir banner.");
+      }
     }
 
     if (target.matches("[data-admin-tab]")) {
@@ -4083,7 +4124,7 @@ function bindEvents() {
 
   const bannerForm = document.getElementById("admin-banner-form");
   if (bannerForm) {
-    bannerForm.addEventListener("submit", (event) => {
+    bannerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       const title = form.elements.title?.value.trim() || `Banner ${banners.length + 1}`;
@@ -4100,9 +4141,13 @@ function bindEvents() {
         mobileImage: form.elements.mobileImage.value.trim() || PLACEHOLDER_IMAGE
       };
 
-      saveBanner(banner);
-      cancelBannerEdit();
-      showToast("Banner salvo com sucesso.");
+      try {
+        await saveBanner(banner);
+        cancelBannerEdit();
+        showToast("Banner salvo com sucesso.");
+      } catch (error) {
+        showToast(error.message || "Erro ao salvar banner.");
+      }
     });
 
     bannerForm.addEventListener("reset", () => {
@@ -4114,7 +4159,7 @@ function bindEvents() {
 
   const siteContentForm = document.getElementById("admin-site-content-form");
   if (siteContentForm) {
-    siteContentForm.addEventListener("submit", (event) => {
+    siteContentForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       siteContent = normalizeSiteContent({
@@ -4128,10 +4173,14 @@ function bindEvents() {
           photoTwo: form.elements.aboutPhotoTwo.value.trim() || PLACEHOLDER_IMAGE
         }
       });
-      saveSiteContent();
-      renderSiteContent();
-      renderAdminSiteContentForm();
-      showToast("Banner inferior e fotos salvos.");
+      try {
+        await saveSiteContentToApi();
+        renderSiteContent();
+        renderAdminSiteContentForm();
+        showToast("Banner inferior e fotos salvos.");
+      } catch (error) {
+        showToast(error.message || "Erro ao salvar fotos da home.");
+      }
     });
   }
 
@@ -4309,6 +4358,7 @@ document.addEventListener("DOMContentLoaded", () => {
   route();
   loadCatalogProducts({ silent: true });
   loadCollectionsFromApi({ silent: true });
+  loadSiteContentFromApi({ silent: true });
   startCollectionCarousel();
   iconRefresh();
 });

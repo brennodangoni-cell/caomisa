@@ -11,6 +11,7 @@ const productCachePath = path.join(dataDir, "products-cache.json");
 const productOverridesPath = path.join(dataDir, "product-overrides.json");
 const productReviewsPath = path.join(dataDir, "product-reviews.json");
 const siteCollectionsPath = path.join(dataDir, "site-collections.json");
+const siteContentPath = path.join(dataDir, "site-content.json");
 const webhookConfigPath = path.join(dataDir, "yampi-webhook.json");
 
 const YAMPI_PRODUCT_EVENTS = [
@@ -653,6 +654,92 @@ async function writeSiteCollections(collections) {
   });
 }
 
+function defaultSiteContentPayload() {
+  return {
+    banners: [
+      {
+        id: "banner-brasil",
+        eyebrow: "Coleção Brasil Pet",
+        title: "Torça com Conforto",
+        subtitle: "Camisas leves em verde e amarelo feitas para seu pet vibrar junto com você.",
+        linkUrl: "/produtos?categoria=Brasil",
+        linkText: "Ver Coleção Brasil",
+        desktopImage: "assets/foto-3.webp",
+        mobileImage: "assets/foto-3.webp"
+      },
+      {
+        id: "banner-inverno",
+        eyebrow: "Coleção Inverno",
+        title: "Aqueça seu Melhor Amigo",
+        subtitle: "Casacos quentinhos e macios para dias frios com muito estilo.",
+        linkUrl: "/produtos?categoria=Inverno",
+        linkText: "Ver Casacos",
+        desktopImage: "assets/foto-5.webp",
+        mobileImage: "assets/foto-5.webp"
+      },
+      {
+        id: "banner-kits",
+        eyebrow: "Kits Promocionais",
+        title: "Leve Mais, Pague Menos",
+        subtitle: "Looks especiais para renovar o guarda-roupa do seu pet.",
+        linkUrl: "/produtos?categoria=Kits",
+        linkText: "Aproveitar Oferta",
+        desktopImage: "assets/foto-principal.webp",
+        mobileImage: "assets/foto-principal.webp"
+      }
+    ],
+    siteContent: {
+      lowerBanner: {
+        linkUrl: "/produtos?categoria=Brasil",
+        desktopImage: "assets/payment-methods-new.webp",
+        mobileImage: "assets/payment-methods-new.webp"
+      },
+      aboutPhotos: {
+        photoOne: "assets/about-caomisa-team.webp",
+        photoTwo: "assets/foto-principal.webp"
+      }
+    }
+  };
+}
+
+function sanitizeSiteContentPayload(payload = {}) {
+  const fallback = defaultSiteContentPayload();
+  const banners = Array.isArray(payload.banners) && payload.banners.length ? payload.banners : fallback.banners;
+  return {
+    banners: banners.map((banner, index) => ({
+      id: slugText(banner.id || banner.title, `banner-${index + 1}`),
+      eyebrow: cleanText(banner.eyebrow),
+      title: cleanText(banner.title) || `Banner ${index + 1}`,
+      subtitle: cleanText(banner.subtitle),
+      linkUrl: cleanText(banner.linkUrl),
+      linkText: cleanText(banner.linkText),
+      desktopImage: sanitizeStoredImage(banner.desktopImage, fallback.banners[index]?.desktopImage || "assets/foto-principal.webp"),
+      mobileImage: sanitizeStoredImage(banner.mobileImage, fallback.banners[index]?.mobileImage || fallback.banners[index]?.desktopImage || "assets/foto-principal.webp")
+    })),
+    siteContent: {
+      lowerBanner: {
+        ...fallback.siteContent.lowerBanner,
+        ...(payload.siteContent?.lowerBanner || payload.lowerBanner || {})
+      },
+      aboutPhotos: {
+        ...fallback.siteContent.aboutPhotos,
+        ...(payload.siteContent?.aboutPhotos || payload.aboutPhotos || {})
+      }
+    }
+  };
+}
+
+async function readSiteContent() {
+  return sanitizeSiteContentPayload((await readJsonData(siteContentPath)) || {});
+}
+
+async function writeSiteContent(payload) {
+  await writeJsonData(siteContentPath, {
+    updatedAt: new Date().toISOString(),
+    ...sanitizeSiteContentPayload(payload)
+  });
+}
+
 function sanitizeDescriptionBlocks(blocks = []) {
   const source = Array.isArray(blocks) ? blocks : [];
   return [0, 1, 2].map((index) => {
@@ -1190,6 +1277,22 @@ async function handleCollectionsPut(req, res) {
   });
 }
 
+async function handleSiteContentGet(res) {
+  sendJson(res, 200, {
+    ok: true,
+    ...(await readSiteContent())
+  });
+}
+
+async function handleSiteContentPut(req, res) {
+  const body = await readRequestJsonWithLimit(req, 12_000_000);
+  await writeSiteContent(body);
+  sendJson(res, 200, {
+    ok: true,
+    ...(await readSiteContent())
+  });
+}
+
 async function handleProductMetadata(req, res, productId) {
   const body = await readRequestJsonWithLimit(req, 12_000_000);
   const cache = await cachedProductPayload();
@@ -1544,6 +1647,17 @@ async function handleApi(req, res) {
     if (url.pathname === "/api/collections" && req.method === "PUT") {
       if (!requireAdmin(req, res)) return true;
       await handleCollectionsPut(req, res);
+      return true;
+    }
+
+    if (url.pathname === "/api/site-content" && req.method === "GET") {
+      await handleSiteContentGet(res);
+      return true;
+    }
+
+    if (url.pathname === "/api/site-content" && req.method === "PUT") {
+      if (!requireAdmin(req, res)) return true;
+      await handleSiteContentPut(req, res);
       return true;
     }
 

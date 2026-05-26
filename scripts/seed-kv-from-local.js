@@ -9,6 +9,7 @@ const files = [
   "product-overrides.json",
   "product-reviews.json",
   "site-collections.json",
+  "site-content.json",
   "yampi-webhook.json"
 ];
 
