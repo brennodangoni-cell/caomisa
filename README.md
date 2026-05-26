@@ -1,143 +1,78 @@
 # Caomisa
 
-Landing page estatica da Caomisa para vender a camisa pet verde e amarela, com foco em conversao mobile.
+Loja da Caomisa com catálogo sincronizado da Yampi, páginas de produto, admin, avaliações, coleções e checkout.
 
-## Como rodar localmente
+## Rodar Local
 
 ```bash
 npm run dev
 ```
 
-Abrir no navegador:
+Abra `http://localhost:4173`.
+
+## Produção Na Vercel
+
+O projeto está pronto para subir pelo GitHub/Vercel. O arquivo `vercel.json` roteia:
+
+- `/api/*` para a função serverless `api/index.js`;
+- `/produto/*` para `produto.html`;
+- `/produtos`, `/admin`, `/ajuda` e `/politicas` para seus HTMLs.
+
+## Variáveis Obrigatórias
+
+Crie estas variáveis no painel da Vercel, em Project Settings > Environment Variables. Nunca coloque esses valores no GitHub.
 
 ```text
-http://localhost:4173
+YAMPI_ALIAS
+YAMPI_USER_TOKEN
+YAMPI_USER_SECRET_KEY
+PUBLIC_SITE_URL=https://caomisa.shop
+ADMIN_USER
+ADMIN_PASS
+ADMIN_SESSION_SECRET
+KV_REST_API_URL
+KV_REST_API_TOKEN
+DATA_KV_PREFIX=caomisa
 ```
 
-## Estrutura do projeto
+`YAMPI_CHECKOUT_BASE` e `YAMPI_WEBHOOK_SECRET` são opcionais.
 
-- `index.html`: pagina principal da oferta.
-- `styles.css`: visual geral, responsividade e refinamento mobile.
-- `script.js`: troca de imagens, tamanhos, quantidade, CTA e modal de checkout.
-- `politicas.html`: pagina base de politicas da loja.
-- `server.js`: servidor local simples para desenvolvimento.
-- `assets/logo-caomisa-header.png`: logo atual da marca.
+Para gerar `ADMIN_SESSION_SECRET`:
 
-## O que ja fizemos
-
-- Criamos a landing da Caomisa com foco em um produto so.
-- Ajustamos o visual para ficar mais enxuto no mobile.
-- Aplicamos fonte estilo iOS/San Francisco no site todo.
-- Trocamos a identidade para `Caomisa` e configuramos `caomisa.shop` nos metadados.
-- Colocamos a logo nova no header e removemos o texto ao lado.
-- Reduzimos a logo e limpamos o topo, incluindo a remocao da barra `Envio nacional`.
-- Removemos a barra fixa inferior de compra.
-- Mantivemos galeria principal com thumbs e foto do produto no topo.
-- Mantivemos seletor de tamanhos com `PP`, `P`, `M`, `G` e `GG`.
-- Deixamos o tamanho `P` desabilitado, sem texto extra de esgotado.
-- Removemos a calculadora de tamanho.
-- Refizemos a secao de `Tabela de tamanhos e medidas` em formato de tabela, pensada para mobile sem arrastar.
-- Padronizamos a linha do tamanho `M` para ficar igual as outras.
-- Mantivemos espaco para VSL logo abaixo da oferta.
-- Mantivemos placeholder para plugin de avaliacoes.
-- Removemos blocos que voce pediu para limpar, como badges, kit 2 camisas, camisa + bandana, garantia/card de compra segura e textos mais longos de troca.
-- Ajustamos o fluxo textual para checkout pela Yampi.
-- Suavizamos/removemos o hover estranho dos botoes no mobile.
-
-## Estado atual da pagina
-
-Hoje a pagina tem:
-
-- header limpo com logo;
-- galeria de fotos;
-- titulo, preco e CTA;
-- seletor de tamanho;
-- seletor de quantidade;
-- observacao do checkout;
-- bloco de video/VSL;
-- tabela de tamanhos e medidas;
-- area reservada para avaliacoes;
-- FAQ;
-- pagina de politicas separada.
-
-## O que ainda falta para publicar de verdade
-
-1. Criar o produto real no checkout da Yampi.
-2. Definir o link final do checkout.
-3. Confirmar preco final, preco de comparacao, frete e prazo real.
-4. Trocar as imagens de referencia por fotos finais do produto.
-5. Adicionar o video final da VSL, se for usar.
-6. Instalar o plugin de avaliacoes.
-7. Revisar e completar `politicas.html` com dados reais da operacao.
-8. Subir o projeto em uma hospedagem e apontar o dominio `caomisa.shop`.
-9. Inserir pixels e analytics, se for rodar trafego.
-
-## Dados que voce ainda precisa me passar
-
-- link final do checkout da Yampi;
-- preco final e preco promocional;
-- frete e prazo de entrega reais;
-- link ou arquivo do video da VSL;
-- plugin de avaliacoes escolhido;
-- pixel da Meta, GA4 e TikTok Pixel, se quiser rastreamento;
-- acesso da hospedagem ou plataforma onde vamos publicar;
-- acesso do dominio ou painel DNS, se voce quiser ajuda no apontamento.
-
-## Onde configurar cada coisa
-
-### Checkout, WhatsApp, VSL e pixels
-
-Arquivo: `script.js`
-
-Procure pelo objeto `STORE_CONFIG`.
-
-```js
-const STORE_CONFIG = {
-  checkoutBaseUrl: "https://seu-checkout.com/produto",
-  whatsappNumber: "5511999999999",
-  vslEmbedUrl: "https://www.youtube.com/embed/SEU_VIDEO",
-  pixelIds: {
-    meta: "",
-    googleAnalytics: "",
-    tiktok: ""
-  }
-};
+```bash
+npm run secret:admin
 ```
 
-### Plugin de avaliacoes
+## Storage Do Admin
 
-Arquivo: `index.html`
+Localmente, o admin usa os arquivos `data/*.json`. Na Vercel, ele usa Vercel KV/Upstash pelas variáveis `KV_REST_API_URL` e `KV_REST_API_TOKEN`.
 
-Procure por:
+Depois de criar o KV e colocar as variáveis também no `.env` local, envie os dados locais atuais para o KV uma vez:
 
-```html
-<div id="reviews-plugin"></div>
+```bash
+npm run seed:kv
 ```
 
-Esse e o ponto reservado para colar o widget do app/plugin de avaliacoes.
+Isso preserva conteúdo editado no admin, avaliações, coleções, cache de produtos e configuração do webhook sem commitar JSON sensível/operacional.
 
-### Logo
+## Imagens WebP
 
-Arquivo atual da logo:
+As imagens do projeto versionadas aqui ficam em WebP. Os uploads feitos pelo admin passam por conversão no navegador antes de salvar, então JPG/PNG/JPEG enviados por formulário viram `data:image/webp`.
 
-`assets/logo-caomisa-header.png`
+## Webhook Da Yampi
 
-Se voce mandar outra versao, e so substituir esse arquivo ou ajustar o `src` no `index.html` e `politicas.html`.
+Depois do deploy e das variáveis configuradas:
 
-## Observacoes importantes
+1. Acesse `/admin`.
+2. Entre com `ADMIN_USER` e `ADMIN_PASS`.
+3. Clique em `Ativar webhook`.
 
-- As imagens atuais do produto ainda sao referencias externas. O ideal e trocar por imagens proprias ou do fornecedor antes de anunciar.
-- A pagina esta pronta como landing estatica. O checkout real depende do link final da Yampi.
-- `politicas.html` ainda e uma base e precisa receber os dados reais da loja.
+A Yampi chamará `https://caomisa.shop/api/yampi/webhook` e o catálogo será sincronizado automaticamente.
 
-## Proximo passo recomendado
+## Segurança
 
-O proximo passo mais util agora e criar o produto na Yampi e me passar:
-
-1. nome final do produto;
-2. preco;
-3. imagens finais;
-4. link do checkout;
-5. prazo/frete.
-
-Com isso, a gente fecha a integracao e deixa a pagina pronta para publicar.
+- `.env` fica fora do GitHub.
+- `data/*.json` fica fora do GitHub.
+- O login do admin agora passa por `/api/admin/login`.
+- Rotas de escrita/moderação/admin exigem token Bearer assinado por `ADMIN_SESSION_SECRET`.
+- Checkout e envio público de avaliações continuam abertos para clientes.

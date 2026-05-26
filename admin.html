@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Painel | Caomisa</title>
+    <meta name="description" content="Painel administrativo da Caomisa para cadastrar produtos." />
+    <meta name="theme-color" content="#001a64" />
+    <link rel="icon" type="image/webp" href="/assets/favicon-caomisa-paw.webp?v=20260525" />
+    <link rel="preload" href="/assets/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/styles.css?v=20260526-01" />
+  </head>
+  <body class="admin-template">
+    <div class="top-strip">
+      <div class="promo-marquee" aria-label="Painel administrativo">
+        <div class="promo-marquee-group">
+          <span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i><span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i><span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i>
+        </div>
+        <div class="promo-marquee-group" aria-hidden="true">
+          <span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i><span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i><span>Painel administrativo Caomisa</span><i data-lucide="paw-print" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-main">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Abrir menu">
+          <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <button class="icon-button header-search" type="button" data-search-toggle aria-label="Buscar produtos" style="opacity: 0; pointer-events: none;">
+          <i data-lucide="search" aria-hidden="true"></i>
+        </button>
+
+        <a class="brand" href="/" aria-label="Caomisa inicio">
+          <img src="/assets/logocaomisa.webp" alt="Caomisa" />
+        </a>
+
+        <button class="cart-button" type="button" data-cart-open aria-label="Abrir carrinho">
+          <i data-lucide="shopping-bag" aria-hidden="true"></i>
+          <span data-cart-count>0</span>
+        </button>
+      </div>
+
+      <nav class="main-nav" data-main-nav aria-label="Menu principal">
+        <a href="/">Início</a>
+        <a href="/produtos">Categorias <i data-lucide="chevron-down" aria-hidden="true"></i></a>
+        <a href="/ajuda">Central de Ajuda</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="admin-section" data-admin-section>
+        <div class="section-heading">
+          <h2>Cadastro de produtos</h2>
+        </div>
+
+        <form class="login-box" data-login-form>
+          <label>
+            Usuario
+            <input name="username" autocomplete="username" required />
+          </label>
+          <label>
+            Senha
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="primary-button" type="submit">
+            <i data-lucide="log-in" aria-hidden="true"></i>
+            Entrar no painel
+          </button>
+          <p data-login-error role="alert"></p>
+        </form>
+        <div class="admin-panel" data-admin-panel hidden>
+          <div class="admin-toolbar" style="margin-bottom: 20px;">
+            <p>Logado como <strong>administrador</strong></p>
+            <button class="secondary-button" type="button" data-logout>Sair</button>
+          </div>
+
+          <!-- Tab buttons -->
+          <div class="admin-tabs">
+            <button class="admin-tab-btn active" type="button" data-admin-tab="produtos">Produtos</button>
+            <button class="admin-tab-btn" type="button" data-admin-tab="depoimentos">Depoimentos</button>
+            <button class="admin-tab-btn" type="button" data-admin-tab="colecoes">Coleções</button>
+            <button class="admin-tab-btn" type="button" data-admin-tab="banners">Banners do Carrossel</button>
+          </div>
+
+          <!-- Product Tab Content -->
+          <div class="admin-tab-content" id="tab-produtos">
+            <!-- Dashboard Metrics Grid -->
+            <div class="admin-metrics-grid">
+              <div class="metric-card">
+                <span class="metric-title">Produtos cadastrados</span>
+                <strong class="metric-val" id="metric-total-products">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-title">Categorias</span>
+                <strong class="metric-val" id="metric-total-categories">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-title">Itens em Estoque</span>
+                <strong class="metric-val" id="metric-total-stock">0</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-title">Depoimentos pendentes</span>
+                <strong class="metric-val" id="metric-pending-reviews">0</strong>
+              </div>
+            </div>
+
+            <section class="admin-yampi-sync" aria-label="Sincronização de produtos">
+              <div>
+                <span class="metric-title">Integração</span>
+                <strong>Produtos, tamanhos e checkout automáticos</strong>
+                <p data-yampi-status>Sincronize para puxar produtos, fotos, tamanhos, estoque, preços e checkout.</p>
+              </div>
+              <div class="admin-sync-actions">
+                <button class="secondary-button" type="button" data-yampi-webhook>
+                  <i data-lucide="webhook" aria-hidden="true"></i>
+                  Ativar webhook
+                </button>
+                <button class="primary-button" type="button" data-yampi-sync>
+                  <i data-lucide="refresh-cw" aria-hidden="true"></i>
+                  Sincronizar produtos
+                </button>
+              </div>
+            </section>
+
+            <div class="admin-product-actions" hidden>
+              <label class="admin-select-all">
+                <input type="checkbox" data-select-all-products />
+                Selecionar todos
+              </label>
+              <button class="danger-button" type="button" data-delete-selected-products>
+                <i data-lucide="trash-2" aria-hidden="true"></i>
+                Excluir selecionados
+              </button>
+              <span data-selected-products-count>0 selecionados</span>
+            </div>
+
+            <!-- Conteúdo complementar da página. Nome, preço, estoque, fotos e tamanhos vêm da Yampi. -->
+            <form class="visual-inline-editor product-advanced-editor" data-product-form hidden>
+              <input type="hidden" name="id" />
+
+              <!-- Edit status alert (hidden by default) -->
+              <div class="edit-mode-alert" id="admin-edit-mode-alert" style="display: none; width: 100%; box-sizing: border-box;">
+                <div class="alert-content">
+                  <i data-lucide="edit-3"></i>
+                  <span>Você está editando o produto: <strong id="admin-editing-product-name">Nome do Produto</strong></span>
+                </div>
+                <button class="secondary-button" type="button" id="btn-cancel-edit-mode">Cancelar Edição</button>
+              </div>
+
+              <div class="product-admin-summary" data-product-edit-summary></div>
+
+              <div class="product-detail-edit-grid product-page-edit-grid">
+                <!-- Left Column: Visual Media Gallery and Selectors -->
+                <div class="detail-media-edit" hidden>
+                  <div class="main-image-container-edit">
+                    <img id="edit-main-image-preview" src="/assets/banner-placeholder.svg" alt="Foto Principal" />
+                    <div class="main-image-overlay">Foto principal</div>
+                  </div>
+
+                  <div class="photo-selector-section-edit">
+                    <span class="edit-field-label">Selecione fotos da galeria e marque a principal</span>
+                    <div class="photo-selector-grid" id="admin-photo-selector-grid">
+                      <!-- Rendered dynamically in script.js -->
+                    </div>
+
+                    <!-- WebP Image file upload and URL options -->
+                    <div class="custom-photo-input-group">
+                      <!-- Dashed Box for WebP Uploads -->
+                      <div class="photo-uploader-dashed" onclick="document.getElementById('product-upload-file').click();">
+                        <i data-lucide="upload-cloud"></i>
+                        <div class="admin-upload-copy">
+                          <span>Upload de imagem</span>
+                          <small>Qualquer formato, convertido automaticamente para WebP</small>
+                        </div>
+                        <input type="file" id="product-upload-file" accept="image/*" style="display: none;" />
+                        <button class="secondary-button" type="button">Escolher Foto</button>
+                      </div>
+                      <button class="secondary-button" type="button" data-clear-product-photos>
+                        <i data-lucide="trash-2" aria-hidden="true"></i>
+                        Limpar fotos deste produto
+                      </button>
+                    </div>
+
+                    <!-- Hidden inputs to hold selected paths -->
+                    <input type="hidden" name="image" id="product-main-image-input" />
+                    <input type="hidden" name="images" id="product-images-input" />
+                  </div>
+                </div>
+
+                <!-- Right Column: Visual detail panel inputs -->
+                <div class="detail-panel-edit">
+                  <div class="yampi-managed-fields" hidden>
+                  <!-- Categoria do produto -->
+                  <div>
+                    <span class="edit-field-label">Categoria</span>
+                    <input name="category" class="inline-input eyebrow-edit" list="category-options" placeholder="Escolha ou digite uma nova categoria" />
+                    <datalist id="category-options"></datalist>
+                  </div>
+
+                  <!-- Product Name (Title) -->
+                  <div>
+                    <span class="edit-field-label">Nome do produto</span>
+                    <input name="name" class="inline-input title-edit" placeholder="Moletom Caomisa Urban" />
+                  </div>
+
+                  <!-- Prices Row -->
+                  <div class="price-edit-wrapper">
+                    <div>
+                    <span class="edit-field-label">Preço promocional (R$)</span>
+                      <input name="price" type="number" min="0" step="0.01" class="inline-input price-edit" placeholder="89.90" />
+                    </div>
+                    <div>
+                      <span class="edit-field-label">Preço original (R$)</span>
+                      <input name="oldPrice" type="number" min="0" step="0.01" class="inline-input old-price-edit" placeholder="179.90" />
+                    </div>
+                  </div>
+
+                  <!-- Description -->
+                  <div>
+                    <span class="edit-field-label">Descrição do produto</span>
+                    <textarea name="description" class="inline-textarea description-edit" rows="4" placeholder="Descreva os detalhes do tecido, caimento e indicações..."></textarea>
+                  </div>
+
+                  <!-- Sizes and Stock -->
+                  <div class="extra-edit-row">
+                    <div>
+                      <span class="edit-field-label">Tamanhos (PP, P, M, G, GG)</span>
+                      <input name="sizes" class="inline-input" placeholder="PP, P, M, G, GG" />
+                    </div>
+                    <div>
+                      <span class="edit-field-label">Estoque total</span>
+                      <input name="stock" type="number" min="0" step="1" class="inline-input" placeholder="30" />
+                    </div>
+                  </div>
+                  </div>
+
+                  <section class="premium-product-editor">
+                    <div class="admin-editor-heading">
+                      <span>Página do produto</span>
+                      <strong>Campos que não vêm da Yampi</strong>
+                    </div>
+
+                    <div class="extra-edit-row">
+                      <div>
+                        <span class="edit-field-label">Etiqueta do produto</span>
+                        <input name="badgeText" class="inline-input" placeholder="Mais vendido" />
+                      </div>
+                      <div>
+                        <span class="edit-field-label">Texto de vendidos</span>
+                        <input name="soldCount" class="inline-input" placeholder="+598 vendidos" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <span class="edit-field-label">Texto de entrega / confiança</span>
+                      <input name="deliveryText" class="inline-input" placeholder="Frete gratis para todo o Brasil com envio acompanhado." />
+                    </div>
+
+                    <div>
+                      <span class="edit-field-label">Título da descrição rica</span>
+                      <input name="descriptionTitle" class="inline-input" placeholder="Produto Caomisa para pets com conforto" />
+                    </div>
+
+                    <div>
+                      <span class="edit-field-label">Introdução da descrição rica</span>
+                      <textarea name="descriptionIntro" class="inline-textarea" rows="3" placeholder="Texto de abertura da descrição..."></textarea>
+                    </div>
+
+                    <div class="admin-editor-heading compact">
+                      <span>Descrição visual</span>
+                      <strong>Uma foto com texto, limpa e direta</strong>
+                    </div>
+
+                    <div class="description-block-editor single-description-editor">
+                      <article>
+                        <div class="banner-image-preview-container description-ratio">
+                          <img id="desc-block-1-preview" src="/assets/banner-placeholder.svg" alt="Preview da descrição visual" />
+                        </div>
+                        <input type="hidden" name="descBlock1Image" id="desc-block-1-image" value="assets/banner-placeholder.svg" />
+                        <input type="file" id="desc-block-1-file" accept="image/*" style="display:none;" />
+                        <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('desc-block-1-file').click();">
+                          <i data-lucide="image-plus" aria-hidden="true"></i>
+                          Foto da descrição
+                        </button>
+                        <input name="descBlock1Title" class="inline-input" placeholder="Título curto da seção" />
+                        <textarea name="descBlock1Text" class="inline-textarea" rows="3" placeholder="Texto objetivo, com benefício real do produto"></textarea>
+                      </article>
+                    </div>
+
+                    <div class="admin-editor-heading compact">
+                      <span>Guia de tamanhos</span>
+                      <strong>Imagens por produto para desktop e mobile</strong>
+                    </div>
+
+                    <div class="banner-upload-grid product-size-guide-upload-grid">
+                      <div class="banner-upload-box">
+                        <span class="edit-field-label">Imagem desktop</span>
+                        <div class="banner-image-preview-container about-ratio">
+                          <img id="product-size-guide-desktop-preview" src="/assets/size-guide-caomisa.webp" alt="Preview do guia de tamanhos desktop" />
+                        </div>
+                        <input type="hidden" name="sizeGuideDesktopImage" id="product-size-guide-desktop-image" value="assets/size-guide-caomisa.webp" />
+                        <input type="file" id="product-size-guide-desktop-file" accept="image/*" style="display:none;" />
+                        <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('product-size-guide-desktop-file').click();">
+                          <i data-lucide="image-plus" aria-hidden="true"></i>
+                          Trocar desktop
+                        </button>
+                      </div>
+
+                      <div class="banner-upload-box">
+                        <span class="edit-field-label">Imagem mobile</span>
+                        <div class="banner-image-preview-container mobile-ratio">
+                          <img id="product-size-guide-mobile-preview" src="/assets/size-guide-caomisa-mobile.webp" alt="Preview do guia de tamanhos mobile" />
+                        </div>
+                        <input type="hidden" name="sizeGuideMobileImage" id="product-size-guide-mobile-image" value="assets/size-guide-caomisa-mobile.webp" />
+                        <input type="file" id="product-size-guide-mobile-file" accept="image/*" style="display:none;" />
+                        <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('product-size-guide-mobile-file').click();">
+                          <i data-lucide="image-plus" aria-hidden="true"></i>
+                          Trocar mobile
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="admin-editor-heading compact">
+                      <span>Depoimentos do produto</span>
+                      <strong>Cadastre, edite e remova manualmente</strong>
+                    </div>
+
+                    <section class="product-review-manager" data-product-review-manager>
+                      <input type="hidden" name="productReviews" id="product-reviews-json" />
+                      <input type="hidden" name="productReviewEditIndex" value="-1" />
+                      <input type="hidden" name="productReviewImage" />
+
+                      <div class="product-review-manager-form">
+                        <div class="review-manager-grid">
+                          <label>
+                            Nome
+                            <input name="productReviewName" class="inline-input" placeholder="Mariana S." />
+                          </label>
+                          <label>
+                            Cidade/UF
+                            <input name="productReviewCity" class="inline-input" placeholder="São Paulo, SP" />
+                          </label>
+                          <label>
+                            Nota
+                            <select name="productReviewStars" class="inline-input">
+                              <option value="5">5 estrelas</option>
+                              <option value="4">4 estrelas</option>
+                              <option value="3">3 estrelas</option>
+                              <option value="2">2 estrelas</option>
+                              <option value="1">1 estrela</option>
+                            </select>
+                          </label>
+                        </div>
+
+                        <label>
+                          Depoimento
+                          <textarea name="productReviewText" class="inline-textarea" rows="4" placeholder="Digite o depoimento real do cliente"></textarea>
+                        </label>
+
+                        <div class="review-manager-photo-row">
+                          <div>
+                            <span class="edit-field-label">Foto do depoimento</span>
+                            <small>Opcional. Use uma foto real enviada pelo cliente.</small>
+                          </div>
+                          <input type="file" id="product-review-photo-file" accept="image/*" hidden data-product-review-photo-file />
+                          <button class="secondary-button compact-action" type="button" data-product-review-photo-pick>
+                            <i data-lucide="image-plus" aria-hidden="true"></i>
+                            Escolher foto
+                          </button>
+                          <button class="secondary-button compact-action" type="button" data-product-review-photo-clear>
+                            Remover foto
+                          </button>
+                          <img class="product-review-photo-preview" data-product-review-photo-preview alt="Prévia da foto do depoimento" hidden />
+                        </div>
+
+                        <div class="review-manager-actions">
+                          <button class="primary-button" type="button" data-product-review-save>
+                            <i data-lucide="plus" aria-hidden="true"></i>
+                            <span data-product-review-save-label>Adicionar depoimento</span>
+                          </button>
+                          <button class="secondary-button" type="button" data-product-review-reset>
+                            Limpar campos
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="product-review-manager-head">
+                        <strong data-product-review-count>0 depoimentos</strong>
+                        <span>O site mostra no máximo 10 depoimentos por página.</span>
+                      </div>
+                      <div class="product-review-editor-list" data-product-reviews-editor-list></div>
+                    </section>
+                  </section>
+
+                  <!-- Save/Cancel Actions -->
+                  <div class="form-actions-edit">
+                    <button class="primary-button" type="submit">
+                      <i data-lucide="save" aria-hidden="true"></i>
+                      Salvar conteúdo
+                    </button>
+                    <button class="secondary-button" type="reset" data-cancel-edit>Fechar</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="admin-list" data-admin-list></div>
+          </div>
+
+          <!-- Reviews Tab Content -->
+          <div class="admin-tab-content" id="tab-depoimentos" style="display: none;">
+            <div class="admin-reviews-heading">
+              <div>
+                <span class="metric-title">Moderação</span>
+                <h2>Depoimentos enviados pelos clientes</h2>
+                <p>A nota e a avaliação só entram na página do produto depois que você aprovar.</p>
+              </div>
+              <button class="secondary-button" type="button" data-admin-refresh-reviews>
+                <i data-lucide="refresh-cw" aria-hidden="true"></i>
+                Atualizar
+              </button>
+            </div>
+            <div class="admin-reviews-list" data-admin-reviews-list></div>
+          </div>
+
+          <div class="admin-tab-content" id="tab-colecoes" style="display: none;">
+            <div class="section-heading" style="margin-bottom: 20px;">
+              <h2>Gerenciar coleções</h2>
+            </div>
+
+            <form class="banner-form collection-form" id="admin-collection-form">
+              <input type="hidden" name="id" />
+
+              <div class="edit-mode-alert full-field" id="collection-edit-mode-alert" style="display: none;">
+                <div class="alert-content">
+                  <i data-lucide="edit-3"></i>
+                  <span>Editando coleção: <strong id="admin-editing-collection-name">Coleção</strong></span>
+                </div>
+                <button class="secondary-button" type="button" id="btn-cancel-collection-edit">Cancelar edição</button>
+              </div>
+
+              <div class="banner-field-grid">
+                <label>
+                  Nome da coleção
+                  <input name="name" placeholder="Camisas" required />
+                </label>
+                <label>
+                  Categoria fallback
+                  <input name="sourceCategory" list="collection-category-options" placeholder="Camisas, Brasil, Casacos..." />
+                  <datalist id="collection-category-options"></datalist>
+                </label>
+                <label>
+                  Ordem
+                  <input name="sortOrder" type="number" min="0" step="1" value="0" />
+                </label>
+              </div>
+
+              <div class="banner-upload-grid full-field collection-editor-grid">
+                <div class="banner-upload-box">
+                  <span class="field-label">Foto da coleção (quadrada)</span>
+                  <div class="banner-image-preview-container about-ratio">
+                    <img id="collection-image-preview" src="/assets/banner-placeholder.svg" alt="Preview da coleção" />
+                  </div>
+                  <input type="hidden" name="image" id="collection-image-url" value="assets/banner-placeholder.svg" />
+                  <input type="file" id="collection-image-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('collection-image-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher foto
+                  </button>
+                </div>
+
+                <div class="collection-products-box">
+                  <span class="field-label">Produtos desta coleção</span>
+                  <div class="collection-product-grid" data-collection-products></div>
+                </div>
+              </div>
+
+              <div class="form-actions full-field" style="margin-top: 24px;">
+                <button class="primary-button" type="submit">
+                  <i data-lucide="save" aria-hidden="true"></i>
+                  Salvar coleção
+                </button>
+                <button class="secondary-button" type="reset">Limpar</button>
+              </div>
+            </form>
+
+            <div class="admin-list" id="admin-collection-list" style="margin-top: 24px;"></div>
+          </div>
+
+          <!-- Banners Tab Content -->
+          <div class="admin-tab-content" id="tab-banners" style="display: none;">
+            <div class="section-heading" style="margin-bottom: 20px;">
+              <h2>Gerenciar banners do carrossel</h2>
+            </div>
+
+            <form class="banner-form" id="admin-banner-form">
+              <input type="hidden" name="id" id="banner-id-input" />
+
+              <!-- Edit status alert (hidden by default) -->
+              <div class="edit-mode-alert full-field" id="banner-edit-mode-alert" style="display: none;">
+                <div class="alert-content">
+                  <i data-lucide="edit-3"></i>
+                  <span>Você está editando o banner: <strong id="admin-editing-banner-title">Título do Banner</strong></span>
+                </div>
+                <button class="secondary-button" type="button" id="btn-cancel-banner-edit">Cancelar Edição</button>
+              </div>
+
+              <div class="banner-field-grid banner-field-grid-simple">
+                <label>
+                  Link ao clicar no banner (opcional)
+                  <input name="linkUrl" id="banner-link-url-input" placeholder="/produtos?categoria=Brasil" />
+                </label>
+              </div>
+
+              <!-- Banner Images Upload -->
+              <div class="banner-upload-grid full-field">
+                <!-- Desktop Banner -->
+                <div class="banner-upload-box">
+                  <span class="field-label">Banner desktop (1920 x 600 px)</span>
+                  <div class="banner-image-preview-container">
+                    <img id="banner-desktop-preview" src="/assets/banner-placeholder.svg" alt="Preview Desktop" />
+                  </div>
+                  <input type="hidden" name="desktopImage" id="banner-desktop-url" value="assets/banner-placeholder.svg" required />
+                  <input type="file" id="banner-desktop-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('banner-desktop-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher imagem desktop
+                  </button>
+                </div>
+
+                <!-- Mobile Banner -->
+                <div class="banner-upload-box">
+                  <span class="field-label">Banner mobile (800 x 800 px)</span>
+                  <div class="banner-image-preview-container mobile-ratio">
+                    <img id="banner-mobile-preview" src="/assets/banner-placeholder.svg" alt="Preview Mobile" />
+                  </div>
+                  <input type="hidden" name="mobileImage" id="banner-mobile-url" value="assets/banner-placeholder.svg" required />
+                  <input type="file" id="banner-mobile-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('banner-mobile-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher imagem mobile
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-actions full-field" style="margin-top: 24px;">
+                <button class="primary-button" type="submit">
+                  <i data-lucide="save" aria-hidden="true"></i>
+                  Salvar banner
+                </button>
+                <button class="secondary-button" type="reset" id="btn-clear-banner-form">Limpar</button>
+              </div>
+            </form>
+
+            <div class="section-heading admin-subsection-heading">
+              <h2>Banner inferior e fotos da home</h2>
+            </div>
+
+            <form class="banner-form site-content-form" id="admin-site-content-form">
+              <div class="banner-field-grid banner-field-grid-simple">
+                <label>
+                  Link do banner inferior
+                  <input name="lowerBannerLinkUrl" placeholder="/produtos?categoria=Inverno" />
+                </label>
+              </div>
+
+              <div class="banner-upload-grid full-field">
+                <div class="banner-upload-box">
+                  <span class="field-label">Banner inferior desktop (1920 x 600 px)</span>
+                  <div class="banner-image-preview-container lower-banner-ratio">
+                    <img id="lower-banner-desktop-preview" src="/assets/banner-placeholder.svg" alt="Preview do banner inferior desktop" />
+                  </div>
+                  <input type="hidden" name="lowerBannerDesktopImage" id="lower-banner-desktop-url" value="assets/banner-placeholder.svg" />
+                  <input type="file" id="lower-banner-desktop-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('lower-banner-desktop-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher imagem desktop
+                  </button>
+                </div>
+
+                <div class="banner-upload-box">
+                  <span class="field-label">Banner inferior mobile (800 x 800 px)</span>
+                  <div class="banner-image-preview-container mobile-ratio">
+                    <img id="lower-banner-mobile-preview" src="/assets/banner-placeholder.svg" alt="Preview do banner inferior mobile" />
+                  </div>
+                  <input type="hidden" name="lowerBannerMobileImage" id="lower-banner-mobile-url" value="assets/banner-placeholder.svg" />
+                  <input type="file" id="lower-banner-mobile-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('lower-banner-mobile-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher imagem mobile
+                  </button>
+                </div>
+              </div>
+
+              <div class="banner-upload-grid full-field">
+                <div class="banner-upload-box">
+                  <span class="field-label">Foto sobre nós 1 (4:3)</span>
+                  <div class="banner-image-preview-container about-ratio">
+                    <img id="about-photo-one-preview" src="/assets/about-caomisa-team.webp" alt="Preview da primeira foto sobre nós" />
+                  </div>
+                  <input type="hidden" name="aboutPhotoOne" id="about-photo-one-url" value="assets/about-caomisa-team.webp" />
+                  <input type="file" id="about-photo-one-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('about-photo-one-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher foto 1
+                  </button>
+                </div>
+
+                <div class="banner-upload-box">
+                  <span class="field-label">Foto sobre nós 2 (4:3)</span>
+                  <div class="banner-image-preview-container about-ratio">
+                    <img id="about-photo-two-preview" src="/assets/banner-placeholder.svg" alt="Preview da segunda foto sobre nós" />
+                  </div>
+                  <input type="hidden" name="aboutPhotoTwo" id="about-photo-two-url" value="assets/banner-placeholder.svg" />
+                  <input type="file" id="about-photo-two-file" accept="image/*" style="display:none;" />
+                  <button class="secondary-button upload-select-button" type="button" onclick="document.getElementById('about-photo-two-file').click();">
+                    <i data-lucide="image-plus" aria-hidden="true"></i>
+                    Escolher foto 2
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-actions full-field" style="margin-top: 24px;">
+                <button class="primary-button" type="submit">
+                  <i data-lucide="save" aria-hidden="true"></i>
+                  Salvar home
+                </button>
+              </div>
+            </form>
+
+            <div class="admin-list" id="admin-banner-list" style="margin-top: 24px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="cart-drawer" data-cart-drawer aria-label="Carrinho" aria-hidden="true">
+      <div class="cart-backdrop" data-cart-close></div>
+      <div class="cart-panel">
+        <div class="cart-head">
+          <div>
+            <span>Seu carrinho</span>
+            <strong style="color: var(--brand-secondary); font-size: 1.1rem;">Sacola de Compras</strong>
+          </div>
+          <button class="icon-button" type="button" data-cart-close aria-label="Fechar carrinho">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="cart-items" data-cart-items></div>
+
+        <div class="cart-summary">
+          <div class="cart-total-row">
+            <span>Subtotal</span>
+            <strong data-cart-total>R$ 0,00</strong>
+          </div>
+          <div class="cart-action-row">
+            <button class="primary-button cart-checkout-button" type="button" data-checkout>
+              <i data-lucide="shopping-cart" aria-hidden="true"></i>
+              Finalizar compra
+            </button>
+            <button class="secondary-button cart-continue-button" type="button" data-cart-close>
+              Continuar comprando
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="toast" data-toast role="status" aria-live="polite"></div>
+
+    <script defer src="/assets/lucide.min.js"></script>
+    <script defer src="/script.js?v=20260526-01"></script>
+  </body>
+</html>

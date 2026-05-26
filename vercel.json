@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/produto/(.*)",
+      "destination": "/produto.html"
+    },
+    {
+      "source": "/produtos",
+      "destination": "/produtos.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/ajuda",
+      "destination": "/ajuda.html"
+    },
+    {
+      "source": "/politicas",
+      "destination": "/politicas.html"
+    }
+  ]
+}
